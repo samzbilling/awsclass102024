@@ -68,6 +68,6 @@ To remove all resources created by this project, use:
 terraform destroy
 ```
 ### Notes
-Ensure that the EC2 instance is in a public subnet with an internet gateway attached for public access.
-The SSH access to the EC2 instance is restricted to your IP for security purposes.
+- Ensure that the EC2 instance is in a public subnet with an internet gateway attached for public access.
+- The SSH access to the EC2 instance is restricted to your IP for security purposes.
 
