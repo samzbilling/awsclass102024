@@ -38,18 +38,36 @@ The Terraform configuration is organized into the following files and directorie
    git clone https://github.com/yourusername/aws_infrastructure_project.git
    cd aws_infrastructure_project
    ```
-2. **Initialize Terraform: Initialize the project to download necessary provider plugins.**
+2. **Initialize Terraform:** Initialize the project to download necessary provider plugins.
 
 ```bash
 terraform init
 ````
-3. **Plan the Deployment: Review the plan to see what resources Terraform will create.**
+3. **Plan the Deployment:** Review the plan to see what resources Terraform will create.
 ```bash
 terraform plan
 ```
-4. **Apply the Configuration: Deploy the infrastructure to AWS.**
+4. **Apply the Configuration:** Deploy the infrastructure to AWS.
 ```bash
 terraform apply
 ```
 5. **Access the Website:**
 Once the infrastructure is deployed, you can access the website using the public IP of the EC2 instance, which is displayed in the Terraform output.
+
+### Website Content
+The website is a simple three-page project with HTML files:
+
+- index.html: Home page
+- about.html: About page
+- contact.html: Contact page
+Each page includes basic content and navigation links, and Nginx serves these files on the EC2 instance.
+
+### Clean Up
+To remove all resources created by this project, use:
+```bash
+terraform destroy
+```
+### Notes
+Ensure that the EC2 instance is in a public subnet with an internet gateway attached for public access.
+The SSH access to the EC2 instance is restricted to your IP for security purposes.
+
