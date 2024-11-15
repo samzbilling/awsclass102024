@@ -1,12 +1,16 @@
 #!/bin/bash
 # Update and install Nginx
-apt-get update -y
-apt-get install -y nginx
+#apt-get update -y
+#apt-get install -y nginx
+sudo yum install nginx
 
 # Create website directory and set permissions
-mkdir -p /var/www/mywebsite
-chown -R www-data:www-data /var/www/mywebsite
-chmod -R 755 /var/www/mywebsite
+sudo mkdir -p /var/www/mywebsite
+sudo chown -R www-data:www-data /var/www/mywebsite
+sudo chmod -R 755 /var/www/mywebsite
+
+sudo chown nginx:nginx  /var/www/mywebsite.index.html
+sudo chown nginx:nginx /var/www/mywebsite
 
 # Create index.html file
 cat <<EOF > /var/www/mywebsite/index.html
@@ -103,6 +107,6 @@ server {
 NGINX_CONF
 
 # Enable the new Nginx configuration and restart Nginx
-ln -s /etc/nginx/sites-available/mywebsite /etc/nginx/sites-enabled/
-rm /etc/nginx/sites-enabled/default
-systemctl restart nginx
+sudoln -s /etc/nginx/sites-available/mywebsite /etc/nginx/sites-enabled/
+sudo rm /etc/nginx/sites-enabled/default
+sudo systemctl restart nginx
