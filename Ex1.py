@@ -1,7 +1,7 @@
 # 1. Odd or Even
 # Write a Python program that takes an integer as input from the user and prints "Even" if the number is even, and "Odd" if it is odd.
 
-x = input("Enter a number: ")
+x = int(input("Enter a number: "))
 
 # Checking even or odd
 if x % 2 == 0:
@@ -14,7 +14,7 @@ else:
 # 2. Voting Eligibility
 # Write a program that asks for a user's age. If the user is 18 or older, print "You are eligible to vote." Otherwise, print "You are not eligible to vote yet."
 
-age = input("Enter your age: ")
+age = int(input("Enter your age: "))
 if age >= 18:
     print("You are eligible to vote.")
 else:
@@ -27,8 +27,8 @@ else:
 # "Both numbers are equal." if they are the same.
 
 # Provide two numbers 
-a = input("Enter first number: ")
-b = input("Enter second number to compare: ")
+a = int(input("Enter first number: "))
+b = int(input("Enter second number to compare: "))
 
 # Comparing the two numbers
 if a > b:
