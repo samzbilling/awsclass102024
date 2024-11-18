@@ -125,7 +125,9 @@ with open("sample.txt", "w") as f:
 with open("sample.txt", "r") as f:
     for line in f:
         print(line.strip())   # Output: This is a sample file.
-        
+
+
+
 5. Data Structure Functions
 
 
