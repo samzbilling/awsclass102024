@@ -1,4 +1,4 @@
-te<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -7,6 +7,87 @@ te<!DOCTYPE html>
     <meta name="keywords" content="ShopSmartlytoday, eCommerce, Shopping, Online Store, Deals">
     <title>ShopSmartlytoday | Online Shopping Made Easy</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Add styles for horizontal display of Recommended Products */
+        .recommended-products .product-grid {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px; /* Adjust gap between products */
+        }
+
+        .recommended-products .product-item {
+            width: 30%; /* Adjust width of each product */
+            text-align: center;
+        }
+
+        /* Make dropdowns the same height as the search input */
+        .search-bar select, .search-bar input[type="text"] {
+            height: 40px; /* Match the height of the input and dropdown */
+            padding: 5px;
+            font-size: 16px;
+        }
+
+        /* Align the 'All' dropdown to the left of the search bar */
+        .search-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Move Country/Region dropdown near the Sign In link */
+        .user-options {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-options select {
+            height: 40px; /* Match the height of the other form elements */
+            font-size: 16px;
+        }
+
+        /* Add styles for footer columns */
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            gap: 30px;
+        }
+
+        .footer-column {
+            width: 18%;
+        }
+
+        .footer-column h3 {
+            margin-bottom: 10px;
+            color: white; /* Make the section titles white */
+        }
+
+        .footer-column ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .footer-column ul li a {
+            text-decoration: none;
+            color: white; /* Make links white */
+        }
+
+        .footer-column ul li a:hover {
+            color: #007bff;
+        }
+
+        /* Add background color for footer */
+        footer {
+            background-color: #333;
+            padding: 20px;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            color: white;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
     <!-- Header Section -->
@@ -19,6 +100,16 @@ te<!DOCTYPE html>
                 </a>
             </div>
             <div class="search-bar">
+                <!-- "All" Dropdown Menu moved to the left of the search -->
+                <select name="category" id="category">
+                    <option value="all">All</option>
+                    <option value="electronics">Electronics</option>
+                    <option value="fashion">Fashion</option>
+                    <option value="home">Home & Kitchen</option>
+                    <option value="beauty">Beauty</option>
+                    <!-- Add more categories as needed -->
+                </select>
+
                 <input type="text" placeholder="Search millions of products...">
                 <button type="submit">Search</button>
             </div>
@@ -27,6 +118,19 @@ te<!DOCTYPE html>
                 <a href="signup.html">Sign Up</a> | <!-- Added Sign Up link -->
                 <a href="orders.html">Orders</a> |
                 <a href="cart.html">Cart (0)</a>
+                <!-- "Change Country/Region" Dropdown Menu moved closer to Sign In -->
+                <select name="country" id="country">
+                    <option value="us">United States</option>
+                    <option value="ca">Canada</option>
+                    <option value="uk">United Kingdom</option>
+                    <option value="de">Germany</option>
+                    <option value="fr">France</option>
+                    <option value="it">Italy</option> <!-- New Country -->
+                    <option value="es">Spain</option> <!-- New Country -->
+                    <option value="au">Australia</option> <!-- New Country -->
+                    <option value="jp">Japan</option> <!-- New Country -->
+                    <!-- Add more countries/regions as needed -->
+                </select>
             </div>
         </div>
         <nav class="main-nav">
@@ -107,52 +211,84 @@ te<!DOCTYPE html>
         </div>
     </section>
 
-    <!-- Footer -->
+    <!-- Recommended Products -->
+    <section class="recommended-products">
+        <h2>Recommended for You</h2>
+        <div class="product-grid">
+            <div class="product-item">
+                <img src="recommended-laptop.jpg" alt="Recommended Laptop">
+                <h3><a href="product-laptop.html">Premium Laptops</a></h3>
+                <p>Highly rated laptops for professionals.</p>
+                <a href="product-laptop.html" class="btn-secondary">Shop Now</a>
+            </div>
+            <div class="product-item">
+                <img src="recommended-phone.jpg" alt="Recommended Smartphone">
+                <h3><a href="product-phone.html">Latest Smartphones</a></h3>
+                <p>Stay connected with the newest phones.</p>
+                <a href="product-phone.html" class="btn-secondary">See Options</a>
+            </div>
+            <div class="product-item">
+                <img src="recommended-vacuum.jpg" alt="Vacuum Cleaner">
+                <h3><a href="product-vacuum.html">Vacuum Cleaners</a></h3>
+                <p>Find the best vacuums for home cleaning.</p>
+                <a href="product-vacuum.html" class="btn-secondary">Shop Vacuums</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Section -->
     <footer>
-        <div class="footer-links">
+        <div class="footer-content">
             <div class="footer-column">
                 <h3>Get to Know Us</h3>
                 <ul>
-                    <li><a href="about.html">About ShopSmartlytoday</a></li>
+                    <li><a href="about-us.html">About Us</a></li>
                     <li><a href="careers.html">Careers</a></li>
-                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="press-releases.html">Press Releases</a></li>
+                    <li><a href="affiliate-program.html">Affiliate Program</a></li>
                 </ul>
             </div>
+
             <div class="footer-column">
                 <h3>Make Money with Us</h3>
                 <ul>
-                    <li><a href="sell.html">Sell on ShopSmartlytoday</a></li>
-                    <li><a href="affiliate.html">Become an Affiliate</a></li>
-                    <li><a href="partner.html">Advertise Your Products</a></li>
+                    <li><a href="sell-on-shopsmartlytoday.html">Sell on ShopSmartlytoday</a></li>
+                    <li><a href="advertise-with-us.html">Advertise with Us</a></li>
                 </ul>
             </div>
+
             <div class="footer-column">
                 <h3>Customer Service</h3>
                 <ul>
-                    <li><a href="help.html">Help Center</a></li>
-		    <li><a href="#">FAQ</a></li>
+                    <li><a href="help.html">Help</a></li>
+                    <li><a href="contact-us.html">Contact Us</a></li>
                     <li><a href="returns.html">Returns</a></li>
-                    <li><a href="shipping.html">Shipping Info</a></li>
+                    <li><a href="shipping.html">Shipping</a></li>
                 </ul>
             </div>
+
             <div class="footer-column">
-                <h3>Legal</h3>
+                <h3>Legal & Policies</h3>
                 <ul>
-                    <li><a href="privacy.html">Privacy Policy</a></li>
-                    <li><a href="terms.html">Terms of Service</a></li>
+                    <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                    <li><a href="terms-and-conditions.html">Terms & Conditions</a></li>
+                    <li><a href="cookie-policy.html">Cookie Policy</a></li>
                 </ul>
             </div>
+
             <div class="footer-column">
-                <h3>Follow Us</h3> <!-- Added Follow Us section -->
+                <h3>Follow Us</h3>
                 <ul>
-                    <li><a href="https://www.facebook.com/ShopSmartlytoday" target="_blank">Facebook</a></li>
-                    <li><a href="https://www.instagram.com/ShopSmartlytoday" target="_blank">Instagram</a></li>
-                    <li><a href="https://www.twitter.com/ShopSmartlytoday" target="_blank">Twitter</a></li>
+                    <li><a href="facebook.com/shopsmartlytoday">Facebook</a></li>
+                    <li><a href="twitter.com/shopsmartlytoday">Twitter</a></li>
+                    <li><a href="instagram.com/shopsmartlytoday">Instagram</a></li>
+                    <li><a href="linkedin.com/shopsmartlytoday">LinkedIn</a></li>
                 </ul>
             </div>
         </div>
+
         <div class="footer-bottom">
-            <p>&copy; 2024 ShopSmartlytoday. All rights reserved.</p>
+            <p>&copy; 2024 ShopSmartlytoday, All Rights Reserved</p>
         </div>
     </footer>
 </body>

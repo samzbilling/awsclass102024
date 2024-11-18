@@ -3,6 +3,24 @@
 # Create a variables.tf file to define input variables.
 # Create a variables.tf file to define variables for the SSH key and IP address.
 
+variable "vpc_id" {
+  description = "The VPC ID where the instance will be deployed"
+  type        = string
+  default     = "vpc-08727a9b98ffeee20"
+}
+
+variable "public_subnet_id" {
+  description = "The public subnet ID for the EC2 instance"
+  type        = string
+  default = "public-subnet"
+}
+
+variable "security_groups" {
+  description = "Security group ID(s) for the EC2 instance"
+  type        = list(string)
+  default     = ["nginx_sg"]
+}
+
 variable "key_name" {
   description = "The SSH key pair name for EC2 access"
   type        = string
@@ -12,16 +30,12 @@ variable "key_name" {
 variable "ssh_ip" {
   description = "The CIDR block or IP address allowed to access via SSH"
   type        = string
-  default     = "74.96.189.98/32"  # Replace YOUR_IP_ADDRESS with your IP
+  default     = "0.0.0.0/0"
 }
 
-variable "vpc_id" {
-  description = "The VPC ID where the instance will be deployed"
-  type        = string
-  default     = "vpc-02e5e06c11a364f8c"
-}
 
-variable "public_subnet_id" {
-  description = "The public subnet ID for the EC2 instance"
-  type        = string
-}
+# variable "user_data" {
+#   description = "User data to configure the instance on startup"
+#   type        = string
+#   default     = null
+# }
