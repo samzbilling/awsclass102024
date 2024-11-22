@@ -1,3 +1,7 @@
+Boto3 Documentation
+
+https://boto3.amazonaws.com/v1/documentation/api/latest/index.html
+
 Exercise 1: Create and Manage S3 Buckets
 Objective: Teach students how to interact with Amazon S3 using Boto3.
 
