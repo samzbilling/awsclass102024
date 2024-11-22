@@ -1,0 +1,75 @@
+Exercise 1: Create and Manage S3 Buckets
+Objective: Teach students how to interact with Amazon S3 using Boto3.
+
+Steps:
+
+Create an S3 bucket.
+Upload a file to the bucket.
+List all files in the bucket.
+Delete a file from the bucket.
+Delete the bucket.
+Challenges :
+
+Handle exceptions when creating a bucket with a name that already exists.
+Use environment variables for AWS credentials.
+
+Exercise 2: DynamoDB CRUD Operations
+Objective: Teach students how to interact with DynamoDB using Boto3.
+
+Steps:
+
+Create a DynamoDB table (e.g., Students with attributes StudentID and Name).
+Insert records into the table.
+Retrieve all records.
+Update a record in the table.
+Delete a record from the table.
+Challenges :
+
+Use the correct data types for attributes (e.g., string, number).
+Implement a function to query the table based on a specific StudentID.
+
+Exercise 3: EC2 Instance Management
+Objective: Teach students how to launch and manage EC2 instances using Boto3.
+
+Steps:
+
+Launch an EC2 instance.
+Retrieve the public IP address of the instance.
+Stop the instance.
+Start the instance again.
+Terminate the instance.
+Challenges :
+
+Use tags to name the instance.
+Create a security group and associate it with the instance.
+Handle errors when attempting to start/stop an already running/stopped instance.
+
+Exercise 4: Lambda Function Deployment
+Objective: Teach students how to deploy and invoke an AWS Lambda function using Boto3.
+
+Steps:
+
+Create a Lambda function using an existing zip file.
+Add an execution role to the Lambda function.
+Invoke the Lambda function and display the response.
+Update the Lambda function code.
+Delete the Lambda function.
+Challenges :
+
+Use IAM to create a role programmatically for Lambda.
+Handle versioning when updating the function.
+
+Exercise 5: CloudWatch Logs and Monitoring
+Objective: Teach students how to use CloudWatch for logging and monitoring resources.
+
+Steps:
+
+Create a log group and log stream.
+Write a custom log entry to the stream.
+Retrieve log events from the stream.
+Set up a metric filter on the log group.
+Delete the log group.
+Challenges :
+
+Create and use IAM policies that allow access to CloudWatch.
+Parse log data to find specific patterns (e.g., errors or warnings).
