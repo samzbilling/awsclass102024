@@ -1,9 +1,10 @@
-# CLASSWORK
+# CLASSWORK (1 & 2)
 
 # 1. Odd or Even
 # Write a Python program that takes an integer as input from the user and prints "Even" if the number is even, and "Odd" if it is odd.
 
-x = int(input("Please enter a number: "))
+x = int(input("Enter an number: "))
+
 if x%2 == 0:
     print('Even')
 else:
@@ -13,14 +14,18 @@ else:
 
 # 2. Voting Eligibility
 # Write a program that asks for a user's age. If the user is 18 or older, print "You are eligible to vote." Otherwise, print "You are not eligible to vote yet."
-y = int(input("What is your age: "))
-if y >= 18:
-    print('You are eligible to vote')
+
+Age = int(input("Enter your age: "))
+
+if Age >= 18:
+    print('You are eligible to vote.')
 else:
-    print('You are not eligible to vote yet.')
+    print('You are NOT eligible to vote yet.')
 
 
 #    ................................................................................................
+
+# HOMEWORK (3 to 10)
 
 # 3. Number Comparison
 # Write a program that takes two numbers as input and prints:
@@ -28,12 +33,12 @@ else:
 # "The second number is greater." if the second number is larger.
 # "Both numbers are equal." if they are the same.
 
-a = int(input("Enter first number: "))
-b = int(input("Enter second number: "))
+Num1 = int(input("Enter first number: "))
+Num2 = int(input("Enter second number: "))
 
-if a > b:
+if Num1 > Num2:
     print('First number is greater!')
-elif b > a:
+elif Num2 > Num1:
     print('Second nunber is greater!')
 else:
     print('both numbers are equal!')
@@ -43,18 +48,18 @@ else:
 # 4. Simple Calculator
 # Write a program that asks the user to input two numbers and an operator (+, -, *, /). Based on the operator provided, calculate and print the result. Make sure to handle division by zero.
 
-a = int(input("Enter first number: "))
-b = int(input("Enter second number: "))
-Operator = input("Enter Operator (+, -, *, /): ")
+Num1 = int(input("Enter first number: "))
+Num2 = int(input("Enter second number: "))
+Operator = input("Enter operator (+, -, *, /): ")
 
 if Operator == "+":
-    print (a + b)
+    print (Num1 + Num2)
 elif Operator == "-":
-    print (a - b)
+    print (Num1 - Num2)
 elif Operator == "*":
-    print (a * b)
-elif Operator == "/" and b !=0:
-    print (a/b)
+    print (Num1 * Num2)
+elif Operator == "/" and Num2 !=0:
+    print (Num1/Num2)
 else: print ("Enter number different than Zero!")
 
 #    ................................................................................................
@@ -67,7 +72,7 @@ else: print ("Enter number different than Zero!")
 # If the score is between 60 and 69, print "D".
 # If the score is below 60, print "F".
 
-Score = int(input("Enter Student's Score: "))
+Score = int(input("Enter student's score: "))
 
 if Score >= 90:
     print('A')
@@ -85,7 +90,7 @@ else:
 # 6. Leap Year Checker
 # Write a program that checks if a given year is a leap year. A leap year is divisible by 4 but not by 100, except when it is also divisible by 400.
 
-Year = int(input("Please enter year: "))
+Year = int(input("Enter year: "))
 
 if (Year %4 == 0 and Year %100 !=0) or Year %400 ==0:
     print('Leap Year')
@@ -97,7 +102,7 @@ else:
 # 7. Positive, Negative, or Zero
 # Write a program that takes a number as input and prints "Positive" if the number is greater than zero, "Negative" if it is less than zero, and "Zero" if it is exactly zero.
 
-Num = int(input('Please Enter Number: '))
+Num = int(input('Enter number: '))
 
 if Num > 0:
     print('Positive')
@@ -111,7 +116,7 @@ else:
 # 8. Day of the Week
 # Write a program that takes an integer (1 to 7) from the user and prints the corresponding day of the week (1 = Monday, 2 = Tuesday, etc.). If the number is not between 1 and 7, print "Invalid day".
 
-Day = int(input('Please Enter number 1 to 7: '))
+Day = int(input('Enter number 1 to 7: '))
 
 if Day == 1:
     print('Monday')
@@ -135,9 +140,9 @@ else:
 # 9. Largest of Three Numbers
 # Write a program that takes three numbers as input and prints the largest of the three. Make sure to handle cases where two or more numbers are equal.
 
-Num1 = float(input('Please Enter First number: '))
-Num2 = float(input('Please Enter Second number: '))
-Num3 = float(input('Please Enter Third number: '))
+Num1 = float(input('nter First number: '))
+Num2 = float(input('Enter Second number: '))
+Num3 = float(input('Enter Third number: '))
         
 if Num1 >= Num2 and Num1 >= Num3:
     print(f'Largest Numberr is {Num1}')
@@ -176,6 +181,4 @@ elif Player1 == 'Scissors':
         print('PLAYER 2 is the Winner!')
         
 else:
-    print('Invalid Input!')
-
-#    ................................................................................................
+    print('Invalid Input. Try again!')
