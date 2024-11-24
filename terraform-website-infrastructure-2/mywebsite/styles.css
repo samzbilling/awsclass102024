@@ -213,8 +213,9 @@ header {
 }
 
 .deal-item img {
-    max-width: 100%;
-    height: auto;
+    width: 100%;
+    height: 200px;
+    object-fit: cover; /* Ensure uniform image size */
     margin-bottom: 15px;
 }
 
@@ -243,27 +244,27 @@ header {
     background-color: #0046be;
 }
 
-/* Trending Now Section */
-.trending-now {
+/* Recommended for You Section */
+.recommended-products {
     padding: 50px 20px;
-    background-color: white;
+    background-color: #f4f6f8;
     text-align: center;
 }
 
-.trending-now h2 {
+.recommended-products h2 {
     font-size: 2.2em;
     margin-bottom: 25px;
     color: #0046be;
 }
 
-.trending-grid {
+.product-grid {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
 }
 
-.trending-item {
-    flex-basis: 23%;
+.product-item {
+    flex-basis: 30%;
     background-color: white;
     padding: 20px;
     text-align: center;
@@ -272,21 +273,26 @@ header {
     border-radius: 8px;
 }
 
-.trending-item img {
-    max-width: 100%;
-    height: auto;
+.product-item img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover; /* Ensure all product images are the same size */
     margin-bottom: 15px;
 }
 
-.trending-item h3 {
+.product-item h3 {
     font-size: 1.4em;
     margin-bottom: 15px;
     color: #333;
 }
 
-.trending-item p {
-    margin-bottom: 15px;
-    color: #777;
+.product-item a {
+    text-decoration: none;
+    color: #0046be;
+}
+
+.product-item a:hover {
+    color: #f90;
 }
 
 /* Footer Section */
