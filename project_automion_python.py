@@ -102,3 +102,115 @@ Identify and fix any issues logged in CloudWatch.
 - Set up QuickSight permissions for S3 and Athena access.
 - Use QuickSight's drag-and-drop interface to create visualizations.
 - Example: Bar chart for sales by category, line chart for sales trends over time.
+
+
+STEP BY STEP SUMMARY GUIDE 
+
+
+
+                                                      Part 1: Automate File Processing with Lambda
+Step 1: Set Up AWS Resources
+S3 Bucket:
+
+Create an S3 bucket (e.g., my-file-processing-bucket).
+Enable event notifications for PutObject events (when a file is uploaded).
+Add a folder (optional) to organize uploaded files.
+DynamoDB Table:
+
+Create a table named FileMetadataTable.
+Primary key: FileName (String).
+Additional attributes: BucketName, ContentType, FileSize, and LastModified.
+SNS Topic:
+
+Create an SNS topic (e.g., FileUploadNotifications).
+Add at least one email subscriber to the topic.
+SES Configuration:
+
+Verify email addresses (sender and recipients) in SES if working in sandbox mode.
+IAM Role:
+
+Assign your Lambda function a role with the following permissions:
+s3:GetObject
+dynamodb:PutItem
+sns:Publish
+ses:SendEmail
+logs:CreateLogStream and logs:PutLogEvents for CloudWatch.
+Step 2: Write and Configure Lambda Function
+Function Workflow:
+
+Trigger Lambda when a file is uploaded to S3.
+Extract metadata about the file (e.g., name, size, content type).
+Store metadata in DynamoDB.
+Send an SNS notification about the file upload.
+Send a detailed email report using SES.
+Log all events in CloudWatch.
+Implementation Steps:
+
+S3 Integration:
+
+Parse the event to retrieve bucket name and file details.
+Use the head_object API to get metadata.
+DynamoDB Integration:
+
+Store file metadata in the FileMetadataTable.
+SNS Integration:
+
+Publish a notification to the SNS topic with file details.
+SES Integration:
+
+Compose an email with file metadata and send it via SES.
+CloudWatch Integration:
+
+Add log statements for debugging and monitoring.
+Step 3: Deploy and Test
+Deploy the Lambda function.
+Upload a file to the S3 bucket.
+Verify the following:
+File metadata is stored in DynamoDB.
+An SNS notification is sent to subscribers.
+An email report is received via SES.
+Logs are available in CloudWatch.
+Part 2: Query Data with Athena
+Step 4: Configure Athena
+Set Up an S3 Data Catalog:
+
+Configure Athena to query the S3 bucket where files are stored.
+Define the schema based on the file structure (e.g., CSV headers).
+Perform SQL Queries:
+
+Use queries to analyze the data, such as:
+sql
+Copy code
+SELECT Category, SUM(Total) AS TotalSales
+FROM sales_data_table
+GROUP BY Category;
+Step 5: Optimize for Real-Time Queries
+Integrate AWS Glue for ETL tasks to prepare data for Athena.
+Store query results in an S3 bucket.
+Part 3: Visualize Data in QuickSight
+Step 6: Connect QuickSight to Athena
+Set up a new QuickSight data source linked to Athena.
+Build datasets based on Athena queries.
+Step 7: Create Dashboards
+Use the drag-and-drop interface to create:
+Bar charts for sales by category.
+Line charts for trends over time.
+Top 10 customers or products.
+Summary of Student Tasks
+Set Up Resources:
+
+S3 bucket, DynamoDB table, SNS topic, SES email configuration, and IAM role.
+Lambda Function:
+
+Implement integrations for S3, DynamoDB, SNS, SES, and CloudWatch.
+Athena Queries:
+
+Query data in the S3 bucket using SQL.
+QuickSight Dashboards:
+
+Visualize results from Athena queries.
+Validation
+Confirm metadata storage in DynamoDB.
+Check notifications and email reports.
+Run SQL queries and validate results.
+Ensure QuickSight dashboards visualize the required insights.
