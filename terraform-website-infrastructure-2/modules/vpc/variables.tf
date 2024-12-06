@@ -3,6 +3,12 @@
 
 # In the vpc module, several variables can be parameterized to make the code reusable and adaptable to different configurations. 
 
+variable "vpc_id" {
+  description = "The VPC ID where the instance will be deployed"
+  type        = string
+  default     = "vpc-07a944769b8a5defa"
+}
+
 variable "vpc_cidr" {
   description = "The CIDR block for the VPC"
   type        = string
@@ -34,3 +40,8 @@ variable "availability_zone_private" {
 }
 
 
+# variable "public_subnet_id" {
+#   description = "The public subnet ID for the EC2 instance"
+#   type        = string
+#   default = "public-subnet"
+# }

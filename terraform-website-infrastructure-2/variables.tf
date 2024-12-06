@@ -6,9 +6,8 @@
 variable "vpc_id" {
   description = "The VPC ID where the instance will be deployed"
   type        = string
-  default     = "vpc-08727a9b98ffeee20"
+  default     = "vpc-07a944769b8a5defa"
 }
-
 variable "public_subnet_id" {
   description = "The public subnet ID for the EC2 instance"
   type        = string
@@ -33,6 +32,11 @@ variable "ssh_ip" {
   default     = "0.0.0.0/0"
 }
 
+variable "ami_id" {
+   description = "AMI ID for the EC2 instance"
+   type        = string
+    default     = "ami-01e3c4a339a264cc9"
+ }
 
 # variable "user_data" {
 #   description = "User data to configure the instance on startup"

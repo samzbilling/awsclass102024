@@ -20,17 +20,19 @@ variable "public_subnet_id" {
 variable "vpc_id" {
   description = "The VPC ID where the EC2 instance will be deployed"
   type        = string
+  default = "vpc-07a944769b8a5defa"
 }
 
-# variable "ami" {
-#   description = "AMI ID for the EC2 instance"
-#   type        = string
-# }
+variable "ami_id" {
+   description = "AMI ID for the EC2 instance"
+   type        = string
+   default     = "ami-01e3c4a339a264cc9"
+ }
 
 variable "instance_type" {
   description = "Instance type for the EC2 instance"
   type        = string
-  default     = "t2.micro"  # Optional: provide a default value
+  default     = "t2.micro"  
 }
 
 

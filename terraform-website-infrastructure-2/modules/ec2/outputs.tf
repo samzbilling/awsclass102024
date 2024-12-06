@@ -1,4 +1,3 @@
-# In outputs.tf 
 
 output "nginx_public_ip" {
   description = "The public IP of the NGINX instance"

@@ -18,13 +18,12 @@ module "vpc" {
   availability_zone_private = "us-east-1b"
 }
 
-
 # Security Groups Module block:
 
 module "security_groups" {
   source = "./modules/security_groups"
-  vpc_id = var.vpc_id
-  #vpc_id = module.vpc.vpc_id            # Pass VPC ID from the vpc module
+  #vpc_id = var.vpc_id
+  vpc_id = module.vpc.vpc_id            # Pass VPC ID from the vpc module
   ssh_ip = var.ssh_ip                   # Pass the SSH IP from root variables
 }
 
@@ -34,11 +33,12 @@ module "ec2" {
   source           = "./modules/ec2"
   vpc_id           = module.vpc.vpc_id
   public_subnet_id = module.vpc.public_subnet_id            # Passing public_subnet_id from the vpc module
-  security_groups   = module.security_groups.nginx_sg_id
+  security_groups  = module.security_groups.nginx_sg_id
   key_name         = var.key_name
-  ami              = "ami-01e3c4a339a264cc9"       
-  instance_type    = "t2.micro" 
-  user_data        = file("scripts/userdata.sh")
+
+  # ami              = var.ami_id      
+  # instance_type    = "t2.micro" 
+  # user_data        = file("scripts/userdata.sh")
 }
 
 # This setup makes ami and instance_type configurable from the root module while allowing the ec2 module 

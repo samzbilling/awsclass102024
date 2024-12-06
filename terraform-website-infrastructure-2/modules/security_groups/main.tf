@@ -3,8 +3,7 @@
 
 resource "aws_security_group" "nginx_sg" {
   description = "Security group for Nginx instances"
-  vpc_id = var.vpc_id
-  
+  vpc_id      = var.vpc_id
 
   ingress {
     from_port   = 80
@@ -31,8 +30,6 @@ resource "aws_security_group" "nginx_sg" {
     Name = "nginx_sg"
   }
 }
-
-
 
 
 

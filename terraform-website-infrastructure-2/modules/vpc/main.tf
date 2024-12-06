@@ -11,7 +11,7 @@ resource "aws_vpc" "my_vpc" {
 }
 
 resource "aws_subnet" "public_subnet" {
-  vpc_id                  = aws_vpc.my_vpc.id
+  vpc_id                  = var.vpc_id
   cidr_block              = var.public_subnet_cidr
   availability_zone       = var.availability_zone_public
   map_public_ip_on_launch = true
@@ -22,7 +22,7 @@ resource "aws_subnet" "public_subnet" {
 }
 
 resource "aws_subnet" "private_subnet" {
-  vpc_id            = aws_vpc.my_vpc.id
+  vpc_id            = var.vpc_id
   cidr_block        = var.private_subnet_cidr
   availability_zone = var.availability_zone_private
 
@@ -32,7 +32,7 @@ resource "aws_subnet" "private_subnet" {
 }
 
 resource "aws_internet_gateway" "ig" {
-  vpc_id = aws_vpc.my_vpc.id
+  vpc_id = var.vpc_id
 
   tags = {
     Name = "my_ig"
@@ -40,7 +40,7 @@ resource "aws_internet_gateway" "ig" {
 }
 
 resource "aws_route_table" "public_rt" {
-  vpc_id = aws_vpc.my_vpc.id
+  vpc_id = var.vpc_id
 
   route {
     cidr_block = "0.0.0.0/0"
