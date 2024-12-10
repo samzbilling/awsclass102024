@@ -73,7 +73,7 @@ header {
 
 .main-nav a {
     color: yellow;
-    text-decoration: none;
+    text-decoration: bold;
     padding: 10px 25px;
 }
 
