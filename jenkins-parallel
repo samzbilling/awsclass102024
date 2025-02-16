@@ -1,0 +1,116 @@
+#!groovy
+
+
+
+// Jenkins job parameters
+properties([
+    parameters([
+        choice(
+            name: 'environment',
+            choices: ['awsl', 'nw3'],
+            description: 'Environment in which to run jobs.'
+        ),
+        string(
+            name: 'Filter',
+            defaultValue: '',
+            description: 'Only call concourse for jobs containing this string. ' +
+                         '(e.g. "stitor" will only run the stitor-world jobs. Empty string = run all.)'
+        )
+    ])
+])
+
+node('target-agents') {
+
+    stage('Clone Repos') {
+        steps {
+            // Clone the Concourse repo
+            git branch: 'main',
+                credentialsId: BITBUCKET_CRED_ID,
+                url: CONCOURSE_REPO_URL
+
+            // Optionally clone the standalone-jobs repo in a separate directory
+            dir('standalone-jobs') {
+                git branch: 'main',
+                    credentialsId: BITBUCKET_CRED_ID,
+                    url: STANDALONE_JOBS_REPO_URL
+            }
+
+            // If you have more repos to clone, repeat as necessary
+        }
+    }
+
+    stage('Setup Concourse Access') {
+        steps {
+            script {
+                // Example of logging in with Concourse CLI or setting environment variables
+                // Adjust the command, credentials, and pipeline usage for your actual environment
+                sh '''
+                    concourse login \\
+                       --team-name developer \\
+                       --username "$CONCOURSE_USER" \\
+                       --password "$CONCOURSE_PASSWORD" \\
+                       --concourse-url https://concourseenv.sit.covtest.net
+                '''
+            }
+        }
+    }
+
+    stage('Generate Pipelines') {
+        steps {
+            script {
+                // Hypothetical function you call that returns a list of (pipelineName, jobName) tuples
+                def pipelineList = getOrThrowBitbucketUrlStringsWhichReturnListOfTuples(params)
+
+                // Possibly filter out items that don’t match user’s Filter param
+                if (params.Filter?.trim()) {
+                    pipelineList = pipelineList.findAll { tuple ->
+                        def (pipelineName, jobName) = tuple
+                        pipelineName.contains(params.Filter) || jobName.contains(params.Filter)
+                    }
+                }
+
+                // Now parallelize each pipeline’s work
+                // We build a map of closures for Jenkins parallel()
+                def parallelStages = [:]
+
+                pipelineList.each { tuple ->
+                    def (pipelineName, jobName) = tuple
+
+                    // Label for the parallel stage
+                    parallelStages["Run ${pipelineName}"] = {
+                        node('target-agents') {
+                            stage("Install dependencies for ${pipelineName}") {
+                                // Example steps, e.g. run a Python install or any environment setup
+                                sh """
+                                    cd ${pipelineName}
+                                    pip install -r requirements.txt
+                                """
+                            }
+                            stage("Execute pipeline ${pipelineName}") {
+                                // For instance, use a Python script to start and wait
+                                sh """
+                                    python start_and_wait.py --pipeline_name ${pipelineName} \\
+                                                             --job_name ${jobName}
+                                """
+                            }
+                        }
+                    }
+                }
+
+                // Actually run everything in parallel
+                parallel parallelStages
+            }
+        }
+    }
+
+    stage('Post-run') {
+        steps {
+            script {
+                // Perform any cleanup, archival of artifacts, notifications, etc.
+                echo "All pipelines complete. Environment: ${params.environment}"
+            }
+        }
+    }
+}
+
+
