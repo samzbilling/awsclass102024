@@ -1,87 +1,123 @@
-argate-agent') {
+#!groovy
+
+/*
+ * Jenkinsfile (Scripted Pipeline)
+ * - Extracts pipelines based on folder names inside "concourseci_repo/pipelines/postgres_db_deploys"
+ * - Reads "params.yml" inside each pipeline folder to determine job names
+ * - Filters based on "Filter" parameter if provided
+ * - Runs jobs in parallel
+ */
+
+@Library('shared-library') _  // Remove if not using a shared library
+
+properties([
+    parameters([
+        choice(
+            name: 'environment',
+            choices: ['awsl', 'nw3'],
+            description: 'Environment in which to run jobs.'
+        ),
+        string(
+            name: 'Filter',
+            defaultValue: '',
+            description: 'Filter for pipeline names/jobs (only run matching ones). Leave blank to run all.'
+        )
+    ])
+])
+
+node('fargate-agent') {
 
     stage('Clone Repos') {
-        // --- Null/empty checks on parameters (optional but recommended) ---
-        if (!params.environment?.trim()) {
-            error "ERROR: 'environment' parameter is empty or null."
-        }
-        // 'Filter' can be empty, so no error check needed unless you require it.
+        cleanWs() // Clean workspace before checkout
 
-        // Checkout the main Concourse pipeline repo
-        checkout([
-            $class: 'GitSCM',
-            branches: [[name: 'main']],
-            userRemoteConfigs: [[
-                credentialsId: BITBUCKET_CRED_ID,
-                url: CONCOURSE_REPO_URL
-            ]]
-        ])
-
-        // Clone the standalone-jobs repo into a separate directory
-        dir('standalone-jobs') {
+        dir('concourseci_repo') {
             checkout([
                 $class: 'GitSCM',
-                branches: [[name: 'main']],
+                branches: [[name: 'master']],
                 userRemoteConfigs: [[
-                    credentialsId: BITBUCKET_CRED_ID,
-                    url: STANDALONE_JOBS_REPO_URL
+                    credentialsId: 'bitbucket-credential',
+                    url: 'https://bitbucket.org/covtest/jenkins.concoursejobs.git'
+                ]]
+            ])
+        }
+
+        dir('standalone_jobs_repo') {
+            checkout([
+                $class: 'GitSCM',
+                branches: [[name: 'master']],
+                userRemoteConfigs: [[
+                    credentialsId: 'bitbucket-credential',
+                    url: 'https://bitbucket.org/covtest/jenkins.standalone-jobs.git'
                 ]]
             ])
         }
     }
 
-    stage('Generate Pipeline List') {
+    stage('Identify Jobs to Run') {
         script {
-            // Example: retrieve or build a list of [pipelineName, jobName] pairs
-            def pipelineList = getOrThrowBitbucketUrlStringsWhichReturnListOfTuples(params.environment)
+            def pipelineList = getPipelinesAndJobs(params.environment, params.Filter)
 
-            // Filter the pipelineList by "Filter" param if provided
-            if (params.Filter?.trim()) {
-                pipelineList = pipelineList.findAll { tuple ->
-                    def (pName, jName) = tuple
-                    pName.contains(params.Filter) || jName.contains(params.Filter)
-                }
-            }
-
-            // Build a map of closures for parallel execution
-            def parallelStages = [:]
-            pipelineList.each { tuple ->
-                def (pipelineName, jobName) = tuple
-
-                // Each pipeline runs in its own closure
-                parallelStages["${pipelineName}"] = {
-                    node('fargate-agent') {
-
-                        // If you need multiple sub-stages inside this parallel branch, that’s fine:
-                        stage("Process: ${pipelineName}") {
-                            // Move into the 'standalone-jobs' directory before doing any job-specific commands
-                            dir('standalone-jobs') {
-                                // Example usage: install dependencies, run Python scripts, etc.
-                                // Adjust these commands to match your actual steps:
-
-                                sh """
-                                  echo 'Installing dependencies for ${pipelineName}...'
-                                  # e.g. pip install -r requirements.txt
-
-                                  echo 'Executing job: ${jobName}'
-                                  # e.g. python start_and_wait.py --pipeline_name ${pipelineName} --job_name ${jobName}
-                                """
-
-                                echo "[INFO] Completed pipeline '${pipelineName}' with job '${jobName}'."
-                            }
-                        }
-                    }
-                }
-            }
-
-            // Run all pipelines in parallel
-            parallel parallelStages
+            // Run all jobs in parallel
+            parallel getParallelDbExecutors(pipelineList)
         }
-    }
-
-    stage('Post-run Cleanup') {
-        // Insert any final steps for notifications, artifact archiving, etc.
-        echo "All pipelines are complete. Environment was set to: ${params.environment}"
     }
 }
 
+/**
+ * Helper function to extract pipeline names (folder names) and job names (from params.yml).
+ */
+def getPipelinesAndJobs(String environment, String filter) {
+    def pipelineList = []
+
+    dir('concourseci_repo/pipelines/postgres_db_deploys') {
+        def files = findFiles()
+
+        for (f in files) {
+            if (f.directory) { // Only process folders
+                echo "Running pipeline for ${f.name}"
+
+                dir(f.name) {
+                    def configYaml = readYaml(file: 'params.yml') // Read params.yml
+                    def pipeline = f.name // Folder name is the pipeline name
+                    def job = "deploy_${environment}_${configYaml.PROJECT}_postgres_db"
+
+                    if (filter.isEmpty() || f.name.contains(filter)) {
+                        pipelineList.add([pipeline, job])
+                        echo "Adding ${pipeline}.${job} to queue."
+                    } else {
+                        echo "Skipping ${pipeline}.${job} due to filter."
+                    }
+                }
+            }
+        }
+    }
+
+    return pipelineList
+}
+
+/**
+ * Function to convert pipelineList into parallel execution map.
+ */
+def getParallelDbExecutors(List<List<String>> pipelineList) {
+    def parallelStages = [:]
+
+    pipelineList.each { tuple ->
+        def (pipelineName, jobName) = tuple
+        parallelStages["${pipelineName}"] = {
+            node('fargate-agent') {
+                stage("Run Pipeline: ${pipelineName}") {
+                    dir("concourseci_repo/pipelines/postgres_db_deploys/${pipelineName}") {
+                        sh """
+                            echo "Executing pipeline ${pipelineName} with job ${jobName}"
+                            # Run the actual deployment command here
+                            # Example:
+                            # python deploy.py --job ${jobName}
+                        """
+                    }
+                }
+            }
+        }
+    }
+
+    return parallelStages
+}
