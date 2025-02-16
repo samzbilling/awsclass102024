@@ -1,116 +1,87 @@
-#!groovy
-
-
-
-// Jenkins job parameters
-properties([
-    parameters([
-        choice(
-            name: 'environment',
-            choices: ['awsl', 'nw3'],
-            description: 'Environment in which to run jobs.'
-        ),
-        string(
-            name: 'Filter',
-            defaultValue: '',
-            description: 'Only call concourse for jobs containing this string. ' +
-                         '(e.g. "stitor" will only run the stitor-world jobs. Empty string = run all.)'
-        )
-    ])
-])
-
-node('target-agents') {
+argate-agent') {
 
     stage('Clone Repos') {
-        steps {
-            // Clone the Concourse repo
-            git branch: 'main',
+        // --- Null/empty checks on parameters (optional but recommended) ---
+        if (!params.environment?.trim()) {
+            error "ERROR: 'environment' parameter is empty or null."
+        }
+        // 'Filter' can be empty, so no error check needed unless you require it.
+
+        // Checkout the main Concourse pipeline repo
+        checkout([
+            $class: 'GitSCM',
+            branches: [[name: 'main']],
+            userRemoteConfigs: [[
                 credentialsId: BITBUCKET_CRED_ID,
                 url: CONCOURSE_REPO_URL
+            ]]
+        ])
 
-            // Optionally clone the standalone-jobs repo in a separate directory
-            dir('standalone-jobs') {
-                git branch: 'main',
+        // Clone the standalone-jobs repo into a separate directory
+        dir('standalone-jobs') {
+            checkout([
+                $class: 'GitSCM',
+                branches: [[name: 'main']],
+                userRemoteConfigs: [[
                     credentialsId: BITBUCKET_CRED_ID,
                     url: STANDALONE_JOBS_REPO_URL
-            }
-
-            // If you have more repos to clone, repeat as necessary
+                ]]
+            ])
         }
     }
 
-    stage('Setup Concourse Access') {
-        steps {
-            script {
-                // Example of logging in with Concourse CLI or setting environment variables
-                // Adjust the command, credentials, and pipeline usage for your actual environment
-                sh '''
-                    concourse login \\
-                       --team-name developer \\
-                       --username "$CONCOURSE_USER" \\
-                       --password "$CONCOURSE_PASSWORD" \\
-                       --concourse-url https://concourseenv.sit.covtest.net
-                '''
-            }
-        }
-    }
+    stage('Generate Pipeline List') {
+        script {
+            // Example: retrieve or build a list of [pipelineName, jobName] pairs
+            def pipelineList = getOrThrowBitbucketUrlStringsWhichReturnListOfTuples(params.environment)
 
-    stage('Generate Pipelines') {
-        steps {
-            script {
-                // Hypothetical function you call that returns a list of (pipelineName, jobName) tuples
-                def pipelineList = getOrThrowBitbucketUrlStringsWhichReturnListOfTuples(params)
-
-                // Possibly filter out items that don’t match user’s Filter param
-                if (params.Filter?.trim()) {
-                    pipelineList = pipelineList.findAll { tuple ->
-                        def (pipelineName, jobName) = tuple
-                        pipelineName.contains(params.Filter) || jobName.contains(params.Filter)
-                    }
+            // Filter the pipelineList by "Filter" param if provided
+            if (params.Filter?.trim()) {
+                pipelineList = pipelineList.findAll { tuple ->
+                    def (pName, jName) = tuple
+                    pName.contains(params.Filter) || jName.contains(params.Filter)
                 }
+            }
 
-                // Now parallelize each pipeline’s work
-                // We build a map of closures for Jenkins parallel()
-                def parallelStages = [:]
+            // Build a map of closures for parallel execution
+            def parallelStages = [:]
+            pipelineList.each { tuple ->
+                def (pipelineName, jobName) = tuple
 
-                pipelineList.each { tuple ->
-                    def (pipelineName, jobName) = tuple
+                // Each pipeline runs in its own closure
+                parallelStages["${pipelineName}"] = {
+                    node('fargate-agent') {
 
-                    // Label for the parallel stage
-                    parallelStages["Run ${pipelineName}"] = {
-                        node('target-agents') {
-                            stage("Install dependencies for ${pipelineName}") {
-                                // Example steps, e.g. run a Python install or any environment setup
+                        // If you need multiple sub-stages inside this parallel branch, that’s fine:
+                        stage("Process: ${pipelineName}") {
+                            // Move into the 'standalone-jobs' directory before doing any job-specific commands
+                            dir('standalone-jobs') {
+                                // Example usage: install dependencies, run Python scripts, etc.
+                                // Adjust these commands to match your actual steps:
+
                                 sh """
-                                    cd ${pipelineName}
-                                    pip install -r requirements.txt
+                                  echo 'Installing dependencies for ${pipelineName}...'
+                                  # e.g. pip install -r requirements.txt
+
+                                  echo 'Executing job: ${jobName}'
+                                  # e.g. python start_and_wait.py --pipeline_name ${pipelineName} --job_name ${jobName}
                                 """
-                            }
-                            stage("Execute pipeline ${pipelineName}") {
-                                // For instance, use a Python script to start and wait
-                                sh """
-                                    python start_and_wait.py --pipeline_name ${pipelineName} \\
-                                                             --job_name ${jobName}
-                                """
+
+                                echo "[INFO] Completed pipeline '${pipelineName}' with job '${jobName}'."
                             }
                         }
                     }
                 }
-
-                // Actually run everything in parallel
-                parallel parallelStages
             }
+
+            // Run all pipelines in parallel
+            parallel parallelStages
         }
     }
 
-    stage('Post-run') {
-        steps {
-            script {
-                // Perform any cleanup, archival of artifacts, notifications, etc.
-                echo "All pipelines complete. Environment: ${params.environment}"
-            }
-        }
+    stage('Post-run Cleanup') {
+        // Insert any final steps for notifications, artifact archiving, etc.
+        echo "All pipelines are complete. Environment was set to: ${params.environment}"
     }
 }
-
 
